@@ -1,8 +1,10 @@
 const express = require('express')
 const router = express.Router()
 const homeController = require('../controller/home')
+const productModels = require('../mongoose/db')
 
 // read
+// router.get('/', homeController.readData)
 router.get('/', homeController.readData)
 // get 1 data
 router.get('/:id', homeController.getDataOne)

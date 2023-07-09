@@ -1,16 +1,16 @@
 const homeModels = require('../models/home')
 const database = require('../config/database')
 const { ObjectId } = require('mongodb')
+const productModels = require('../mongoose/db')
 
 // read data
 const readData = async(req, res) => {
     try {
-        const collection = await database()
         const {name} = req.query 
         let findResult = []
         if (!name ) {
-            findResult = await collection.find({}).toArray();
-        } else {findResult = await collection.find({ name: { $regex: name, $options: 'i' }}).toArray();}
+            findResult = await productModels.find({});
+        } else {findResult = await productModels.find({ name: { $regex: name, $options: 'i' }});}
             res.json({
                 message: 'get all produk',
                 findResult
@@ -42,14 +42,15 @@ const getDataOne = async(req, res) => {
 // create data 
 const createData = async(req, res) => {
     try {
-        const collection = await database()
         const {body} = req;
-        await collection.insertOne({ name: body.name, price: body.price, stock: body.stock})
+        const doc = new productModels({name: body.name, price: body.price, stock: body.stock})
+        await doc.save()
             res.json({
                 message: 'create produk',
                 
              })  
     } catch (error) {
+        console.log(error)
         res.json({
             message: 'database Error',
             serverMessage: error,
